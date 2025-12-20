@@ -2,12 +2,12 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #000000;
     color: #333;
 }
 
 header {
-    background-color: #007bff;
+    background-color: #a2ca2b;
     color: white;
     text-align: center;
     padding: 1rem;
@@ -19,7 +19,7 @@ main {
 }
 
 button {
-    background-color: #28a745;
+    background-color: #76ff96;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
