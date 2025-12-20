@@ -1,6 +1,9 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const button = document.getElementById('clickMe');
-    button.addEventListener('click', function() {
-        alert('Hello from ModTech!');
-    });
+const sendBtn = document.getElementById("sendBtn");
+const input = document.getElementById("userInput");
+
+sendBtn.addEventListener("click", () => {
+    if (input.value.trim() !== "") {
+        alert("You typed: " + input.value);
+        input.value = "";
+    }
 });
