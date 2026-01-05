@@ -37,7 +37,7 @@ body {
 
 .header {
   border: 1px solid var(--glass-border);
-  background: rgba(255, 255, 255, 0.1);
+  background: url('https://res.cloudinary.com/diws5bcu6/image/upload/v1767592920/siderbar-background1_r4fzfr.png') center/cover;
   padding: 24px 24px;
   border-radius: 20px;
   box-shadow:
@@ -59,6 +59,18 @@ body {
   right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  background: url('https://res.cloudinary.com/diws5bcu6/image/upload/v1767592921/glowing-ring_suqkbd.gif') center/contain no-repeat;
+  z-index: 1;
 }
 
 .title { margin: 0 0 6px; font-size: 28px; letter-spacing: 0.2px; }
