@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import csv from "csv-parser";
+import PickleLoader from "../services/PickleLoaderService.js";
 
 export class DatasetRepository {
   constructor(options = {}) {
@@ -11,38 +11,27 @@ export class DatasetRepository {
     this.samplePerCsv = options.samplePerCsv;
   }
 
-  async #loadCsv(filePath, label) {
-    const rows = [];
-    const perLimit = this.samplePerCsv;
-    await new Promise((resolve) => {
-      let resolved = false;
-      let count = 0;
-      const stream = fs.createReadStream(filePath);
-      const done = () => { if (!resolved) { resolved = true; resolve(); } };
-      stream.on("close", done).on("error", done)
-        .pipe(csv())
-        .on("data", (row) => {
-          const title = (row.title || row.headline || "").toString().trim();
-          const body = (row.text || "").toString().trim();
-          const combined = [title, body].filter(Boolean).join(". ");
-          if (combined) {
-            rows.push({ text: combined, label });
-            count += 1;
-            if (Number.isFinite(perLimit) && perLimit > 0 && count >= perLimit) {
-              stream.destroy();
-            }
-          }
-        })
-        .on("end", done);
-    });
-    return rows;
+  async #loadPickle(filePath) {
+    try {
+      const data = await PickleLoader.loadPickle(filePath);
+      
+      // Apply sample limit if specified
+      if (Number.isFinite(this.samplePerCsv) && this.samplePerCsv > 0) {
+        return data.slice(0, this.samplePerCsv);
+      }
+      
+      return data;
+    } catch (error) {
+      console.error(`Error loading pickle file ${filePath}:`, error);
+      throw error;
+    }
   }
 
   async loadAll() {
-    const trueCsvPath = path.join(this.dataDir, "True.csv");
-    const fakeCsvPath = path.join(this.dataDir, "Fake.csv");
-    const real = await this.#loadCsv(trueCsvPath, "real");
-    const fake = await this.#loadCsv(fakeCsvPath, "fake");
+    const truePicklePath = path.join(this.dataDir, "True.pkl");
+    const fakePicklePath = path.join(this.dataDir, "Fake.pkl");
+    const real = await this.#loadPickle(truePicklePath);
+    const fake = await this.#loadPickle(fakePicklePath);
     return [...real, ...fake];
   }
 }
