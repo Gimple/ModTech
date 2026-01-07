@@ -26,6 +26,10 @@ function show(obj) {
   const header = `Prediction: ${obj.predictedCategory || 'n/a'} ${conf ? `• Confidence: ${conf}` : ''}`;
 
   let html = '';
+  html += `<div class="result-content">`;
+  
+  // Column 1: Probabilities to Source Information
+  html += `<div class="result-column">`;
   html += `<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">`;
   html += badge(isFake ? 'danger' : 'success', obj.predictedCategory || 'unknown');
   if (conf) html += badge('info', `confidence ${conf}`);
@@ -41,7 +45,7 @@ function show(obj) {
       ${badge('info', `from model ${fmt(p.fromClassifier || 0)}`)}
       ${badge('warn', `from rules ${fmt(p.fromRules || 0)}`)}
     </div>`;
-    html += `<div style="margin:6px 0 0; font-size:12px; color: var(--muted);">fake = 0.75 × model + 0.25 × rules</div>`;
+    html += `<div style="margin:6px 0 0; font-size:12px; color: #ffffff;">fake = 0.75 × model + 0.25 × rules</div>`;
   }
 
   if (obj.url) {
@@ -64,7 +68,15 @@ function show(obj) {
 
   if (obj.datePublished) {
     html += `<div class="section-title">Date of Publication</div>`;
-    html += `<div style="margin-bottom:8px;">${obj.datePublished}</div>`;
+    const date = new Date(obj.datePublished);
+    const formattedDate = date.toLocaleString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    html += `<div style="margin-bottom:8px;">${formattedDate}</div>`;
   }
 
   if (obj.author || obj.publisher) {
@@ -78,7 +90,10 @@ function show(obj) {
     }
     html += `</div>`;
   }
+  html += `</div>`;
 
+  // Column 2: Description to Rules Signals
+  html += `<div class="result-column">`;
   if (obj.description) {
     html += `<div class="section-title">Description</div>`;
     html += `<div style="margin-bottom:8px;opacity:.9;">${obj.description}</div>`;
@@ -88,8 +103,6 @@ function show(obj) {
     html += `<div class="section-title">Extracted Text</div>`;
     html += `<div style="margin-bottom:8px;opacity:.9;max-height:200px;overflow-y:auto;background:#0b1021;padding:8px;border-radius:6px;border:1px solid var(--border);">${obj.extractedText}</div>`;
   }
-
-  
 
   if (obj.textPreview) {
     html += `<div class="section-title">Preview</div>`;
@@ -122,8 +135,9 @@ function show(obj) {
       html += `</div>`;
     }
   }
+  html += `</div>`;
 
-  
+  html += `</div>`;
   resultEl.innerHTML = html;
 }
 
